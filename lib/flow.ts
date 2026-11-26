@@ -3,9 +3,9 @@ import { User } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "./firebase";
 
-export async function api(path: string, user: User | null, body?: unknown) {
+export async function api(path: string, user: User | null, body?: unknown, method = "POST") {
   const res = await fetch(path, {
-    method: "POST",
+    method,
     headers: { "Content-Type": "application/json", ...(user ? { Authorization: `Bearer ${await user.getIdToken(true)}` } : {}) },
     body: JSON.stringify(body ?? {}),
   });
@@ -14,12 +14,11 @@ export async function api(path: string, user: User | null, body?: unknown) {
   return d;
 }
 
-// Where a signed-in user should go next.
+// After sign-in: make sure a profile exists (Google-first accounts get one here).
 export async function nextRoute(user: User) {
-  if (!user.providerData.some((p) => p.providerId === "google.com")) return "/link";
-  let s = await getDoc(doc(db, "users", user.uid));
-  if (!s.exists()) { await api("/api/link", user); s = await getDoc(doc(db, "users", user.uid)); }
-  return s.data()?.classCode ? "/" : "/join";
+  const s = await getDoc(doc(db, "users", user.uid));
+  if (!s.exists()) await api("/api/link", user);
+  return "/";
 }
 
 export function authMessage(e: unknown) {

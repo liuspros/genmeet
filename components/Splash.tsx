@@ -8,7 +8,7 @@ export default function Splash() {
       if (sessionStorage.getItem("splash")) { setShow(false); return; }
       sessionStorage.setItem("splash", "1");
     } catch {}
-    const t = setTimeout(() => setShow(false), 1400);
+    const t = setTimeout(() => setShow(false), 2800);
     return () => clearTimeout(t);
   }, []);
   if (!show) return null;

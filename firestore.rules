@@ -3,9 +3,10 @@ service cloud.firestore {
   match /databases/{db}/documents {
     function me() { return get(/databases/$(db)/documents/users/$(request.auth.uid)).data; }
     function active() { return request.auth != null && me().get('status', 'active') == 'active'; }
-    function inClass(code) { return active() && code != '' && me().classCode == code; }
+    function inClass(code) { return active() && code != '' && (me().get('courses', []).hasAny([code]) || me().get('classCode', '') == code); }
 
     match /users/{uid} { allow read: if request.auth != null && request.auth.uid == uid; }
+    match /groups/{g} { allow read: if request.auth != null; }
     match /meetings/{id} { allow read: if inClass(resource.data.classCode); }
     match /groups/{g}/messages/{m} {
       allow read: if inClass(g);

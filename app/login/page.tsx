@@ -31,10 +31,9 @@ export default function Login() {
     setBusy(false);
   }
 
-
   return (
     <main className="screen narrow">
-      <header className="hero"><AppMark /><h1>Sign in</h1><p>Use your student ID or staff ID and password, or your linked Google account.</p></header>
+      <header className="hero"><AppMark /><h1>Sign in</h1><p>Use your ID and password. Lecturers and linked students can also use Google.</p></header>
       <label><span className="label">ID</span><input className="field" value={id} onChange={(e) => setId(e.target.value)} placeholder="2024/BIO/0142" autoComplete="username" /></label>
       <label><span className="label">Password</span><input className="field" type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" /></label>
       {err && <div className="err" role="alert">{err}</div>}
