@@ -28,7 +28,7 @@ export default function Signup() {
   }
 
   return (
-    <main className="screen">
+    <main className="screen narrow">
       <header className="hero"><AppMark /><h1>Create account</h1><p>Enter your student ID and a password, then verify with Google. You will join your courses next.</p></header>
       <label><span className="label">Student ID</span><input className="field" value={id} onChange={(e) => setId(e.target.value)} placeholder="2024/BIO/0142" autoComplete="username" /></label>
       <label><span className="label">Password</span><input className="field" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="At least 6 characters" autoComplete="new-password" /></label>

@@ -6,6 +6,7 @@ import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useUser } from "@/lib/useUser";
 import { MeetIcon } from "@/components/Logos";
+import PushPrompt from "@/components/PushPrompt";
 import { fmt, until } from "@/lib/time";
 
 type M = { id: string; title: string; start: number; end: number; link: string };
@@ -44,6 +45,7 @@ export default function Home() {
         <h1>Class Schedule</h1>
         {profile.role === "lecturer" && <Link className="btn light meet" href="/schedule/new"><span className="chipicon"><MeetIcon /></span>Create meeting</Link>}
       </header>
+      <PushPrompt />
       <div className="tabs" role="tablist">{TABS.map((t) => <button key={t} role="tab" aria-selected={active === t} className={`tab ${active === t ? "on" : ""}`} onClick={() => setTab(t)}>{t}{t === "Live" && live.length ? ` (${live.length})` : ""}</button>)}</div>
       {err && <div className="err" role="alert">{err}</div>}
       {!err && list.length === 0 && <p>{active === "Live" ? "No class is live right now." : "No classes here yet."}</p>}

@@ -24,6 +24,7 @@ export async function nextRoute(user: User) {
 
 export function authMessage(e: unknown) {
   const c = (e as { code?: string }).code;
+  if (e instanceof TypeError || c === "auth/network-request-failed") return "No internet connection. Check your network and try again.";
   if (c === "auth/popup-closed-by-user" || c === "auth/cancelled-popup-request") return "Google step was cancelled. Try again.";
   if (c === "auth/credential-already-in-use") return "This Gmail is already linked to another ID.";
   if (c === "auth/invalid-credential" || c === "auth/user-not-found" || c === "auth/wrong-password") return "Wrong ID or password.";

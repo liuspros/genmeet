@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAdminDb } from "@/lib/admin";
 import { lecturer, safe } from "@/lib/server";
+import { notifyClass } from "@/lib/notify";
 
 const bad = (error: string, status = 400) => NextResponse.json({ error }, { status });
 
@@ -52,5 +53,6 @@ export const POST = safe(async (req) => {
     throw e;
   }
   await db.collection("audit").add({ type: "meeting.create", uid: l.uid, classCode: l.code, at: Date.now() });
+  await notifyClass(l.code, { title: "New class scheduled", body: title, url: "/", tag: "meeting", skipUid: l.uid }).catch((e) => console.error(e));
   return NextResponse.json({ ok: true });
 });

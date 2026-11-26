@@ -1,6 +1,7 @@
 import { cert, getApps, initializeApp } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
 import { getFirestore } from "firebase-admin/firestore";
+import { getMessaging } from "firebase-admin/messaging";
 
 // Rebuilds the private key from whatever mangled form it was pasted in
 // (quotes, literal \n, spaces instead of line breaks, trailing commas).
@@ -26,3 +27,4 @@ function app() {
 }
 export const getAdminAuth = () => getAuth(app());
 export const getAdminDb = () => getFirestore(app());
+export const getAdminMessaging = () => getMessaging(app());

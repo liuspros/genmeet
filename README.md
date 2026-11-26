@@ -19,3 +19,4 @@ Splash screen is included. ID and password sign-in, reminders and push, attendan
 ## Notes
 - Create your own `.env.local` from `.env.example`. It is never included in shared zips.
 - Firestore rules in `firestore.rules` must be published after every change.
+- Push alerts: in Firebase, Project settings, Cloud Messaging, Web Push certificates, generate a key pair and put it in `NEXT_PUBLIC_FIREBASE_VAPID_KEY`. Also set `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID`. Alerts fire when a class is scheduled. Timed reminders need a scheduler and are not built yet.

@@ -41,7 +41,7 @@ export default function NewClass() {
   if (profile.role !== "lecturer") return <main className="screen"><h1>Schedule class</h1><p>Only lecturers can schedule classes.</p></main>;
 
   return (
-    <form className="screen" onSubmit={submit}>
+    <form className="screen narrow" onSubmit={submit}>
       <header className="hero"><h1>Create meeting</h1><p>The Meet link is created on the Google account you sign in with.</p></header>
       <label><span className="label">Title</span><input className="field" required value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Week 6 · Meiosis" /></label>
       <label><span className="label">Start</span><input className="field" required type="datetime-local" value={when} onChange={(e) => setWhen(e.target.value)} /></label>

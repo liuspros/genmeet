@@ -57,7 +57,7 @@ export default function Admin() {
   const linked = rows.filter((r) => r.linked).length;
 
   return (
-    <main className="screen">
+    <main className="screen narrow">
       <header className="hero"><p>Class admin</p><h1>Roster</h1><p>{rows.length} IDs · {linked} linked · {rows.length - linked} not yet</p></header>
       <div className="card">
         <span className="label" style={{ margin: 0 }}>Class code (share with students)</span>

@@ -16,7 +16,7 @@ export default function Me() {
   if (profile.studentId) rows.push(["Student ID", profile.studentId]);
   rows.push(["Linked Gmail", profile.googleEmail || "Not linked"], ["Course", profile.classCode || "Not joined yet"]);
   return (
-    <main className="screen">
+    <main className="screen narrow">
       <header className="hero"><div className="avatar" aria-hidden="true">{initials}</div><h1>{profile.name}</h1><p>{role}</p></header>
       <div className="card" style={{ gap: 0, padding: "4px 16px" }}>
         {rows.map(([k, v]) => <div key={k} className="kv"><span>{k}</span><span>{v}</span></div>)}

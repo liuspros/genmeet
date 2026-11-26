@@ -19,7 +19,7 @@ export default function LinkGoogle() {
     setBusy(false);
   }
   return (
-    <main className="screen">
+    <main className="screen narrow">
       <header className="hero"><AppMark /><h1>Verify with Google</h1><p>Link your Gmail to your ID to finish setting up your account.</p></header>
       {err && <div className="err" role="alert">{err}</div>}
       <button className="btn google" onClick={go} disabled={busy}><GoogleG />Continue with Google</button>

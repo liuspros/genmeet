@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   title: "GenMeet", description: "Class groups, schedules and Google Meet in one place.",
   manifest: "/manifest.webmanifest", icons: { icon: "/icon.svg", apple: "/icon-192.png" },
 };
-export const viewport: Viewport = { themeColor: "#111113", width: "device-width", initialScale: 1, viewportFit: "cover" };
+export const viewport: Viewport = { themeColor: "#111113", width: "device-width", initialScale: 1, viewportFit: "cover", maximumScale: 1, userScalable: false };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
