@@ -2,7 +2,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { doc, getDoc } from "firebase/firestore";
+import { auth, db } from "@/lib/firebase";
 
 export default function Login() {
   const router = useRouter();
@@ -15,6 +16,7 @@ export default function Login() {
     setBusy(true); setErr("");
     try {
       const { user } = await signInWithPopup(auth, new GoogleAuthProvider());
+      if ((await getDoc(doc(db, "users", user.uid))).exists()) { router.replace("/"); return; }
       const res = await fetch("/api/claim", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${await user.getIdToken()}` },
@@ -39,7 +41,7 @@ export default function Login() {
       <p>Your lecturer added your ID to the class roster. Enter it, then link your Google account.</p>
       <label><span className="label">Student ID</span><input className="field" value={studentId} onChange={(e) => setStudentId(e.target.value)} placeholder="2024/BIO/0142" autoComplete="off" /></label>
       <label><span className="label">Class code</span><input className="field" value={classCode} onChange={(e) => setClassCode(e.target.value)} placeholder="BIO-4821" autoComplete="off" /></label>
-      <div className="note">Your Gmail will be linked to this ID. Lecturers enter only the class code.</div>
+      <div className="note">New here? Enter your ID and class code once to link your Gmail. Already signed up? Just tap Continue with Google.</div>
       {err && <div className="err" role="alert">{err}</div>}
       <div style={{ marginTop: "auto" }}><button className="btn" style={{ width: "100%" }} onClick={go} disabled={busy}>{busy ? "Checking…" : "Continue with Google"}</button></div>
     </main>

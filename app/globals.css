@@ -38,3 +38,8 @@ p{margin:0;color:var(--mute)}
 .status{font-size:11px;font-weight:700;border-radius:999px;padding:5px 10px;background:var(--ash2);color:var(--mute);white-space:nowrap}
 .status.on{background:var(--tint);color:var(--blue)}
 .mini{border:0;border-radius:999px;background:var(--ash2);color:var(--ink);font:inherit;font-size:12px;padding:7px 11px;cursor:pointer}
+.nav{padding:6px;gap:4px;justify-content:stretch}
+.nav a{flex:1;width:auto;height:100%;border-radius:999px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--mute);text-decoration:none;font-size:11px;font-weight:500}
+.nav a.on{background:var(--tint);color:var(--blue)}
+.avatar{width:56px;height:56px;border-radius:999px;background:var(--ink);color:#fff;display:grid;place-items:center;font-weight:700;flex:none}
+.kv{display:flex;justify-content:space-between;gap:16px;padding:14px 0;border-top:1px solid var(--ash2)}.kv:first-child{border-top:0}.kv span:first-child{color:var(--mute)}.kv span:last-child{text-align:right;word-break:break-all}

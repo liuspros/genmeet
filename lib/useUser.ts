@@ -4,7 +4,7 @@ import { onAuthStateChanged, User } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from "./firebase";
 
-export type Profile = { role: "student" | "lecturer"; classCode: string; name: string };
+export type Profile = { role: "student" | "lecturer"; classCode: string; name: string; studentId?: string };
 
 export function useUser() {
   const [user, setUser] = useState<User | null>(null);
