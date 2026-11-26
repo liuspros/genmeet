@@ -20,9 +20,16 @@ export default function Login() {
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${await user.getIdToken()}` },
         body: JSON.stringify({ studentId, classCode }),
       });
-      if (!res.ok) { setErr((await res.json()).error); await auth.signOut(); }
+      let data: { error?: string } = {};
+      try { data = await res.json(); } catch {}
+      if (!res.ok) { setErr(data.error || "Server error. Check the Vercel logs for /api/claim."); await auth.signOut(); }
       else router.replace("/");
-    } catch { setErr("Google sign-in was cancelled. Try again."); }
+    } catch (e) {
+      const c = (e as { code?: string }).code;
+      setErr(c === "auth/popup-closed-by-user" || c === "auth/cancelled-popup-request" ? "Google sign-in was cancelled. Try again."
+        : c === "auth/unauthorized-domain" ? "Add this site’s domain to Firebase, Authentication, Authorized domains."
+        : "Sign-in failed. Try again.");
+    }
     setBusy(false);
   }
 
