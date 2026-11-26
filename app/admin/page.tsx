@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { auth } from "@/lib/firebase";
 import { useUser } from "@/lib/useUser";
 
-type S = { id: string; name: string; linked: boolean };
+type S = { id: string; name: string; linked: boolean; email: string };
 type Entry = { id: string; name: string };
 
 // One student per line: "ID, Name" (comma or tab). A header line is ignored.
@@ -58,9 +58,7 @@ export default function Admin() {
 
   return (
     <main className="screen">
-      <p style={{ marginTop: 6 }}>Class admin</p>
-      <h1 style={{ marginTop: -8 }}>Roster</h1>
-      <div className="card live"><h2 style={{ fontSize: 30 }}>{rows.length} IDs</h2><p>{linked} linked · {rows.length - linked} not yet</p></div>
+      <header className="hero"><p>Class admin</p><h1>Roster</h1><p>{rows.length} IDs · {linked} linked · {rows.length - linked} not yet</p></header>
       <div className="card">
         <span className="label" style={{ margin: 0 }}>Class code (share with students)</span>
         <h2 style={{ letterSpacing: 1, fontWeight: 700 }}>{profile.classCode}</h2>
@@ -75,10 +73,10 @@ export default function Admin() {
       {msg && <div className="note" role="status">{msg}</div>}
       {rows.map((s) => (
         <div key={s.id} className="row">
-          <div style={{ flex: 1, minWidth: 0 }}><b>{s.name || s.id}</b><p style={{ fontSize: 12 }}>{s.id}</p></div>
+          <div style={{ flex: 1, minWidth: 0 }}><b>{s.name || s.id}</b><p style={{ fontSize: 12 }}>{s.id}{s.email ? ` · ${s.email}` : ""}</p></div>
           <span className={`status ${s.linked ? "on" : ""}`}>{s.linked ? "Linked" : "Not linked"}</span>
           {s.linked && <button className="mini" onClick={() => act(s, false)}>Reset</button>}
-          <button className="mini" onClick={() => act(s, true)} aria-label={`Remove ${s.id}`}>Remove</button>
+          <button className="mini out" onClick={() => act(s, true)} aria-label={`Remove ${s.id}`}>Remove</button>
         </div>
       ))}
       {rows.length === 0 && <p>No students yet. Paste a list above or import a CSV.</p>}

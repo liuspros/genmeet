@@ -18,7 +18,7 @@ export default function Splash() {
         <rect x="16" y="30" width="64" height="48" rx="16" fill="#fff" />
         <path d="M30 76L28 95L50 78Z" fill="#fff" />
         <path d="M82 48L102 36Q106 34 106 39V69Q106 74 102 72L82 60Z" fill="#fff" />
-        <path d="M48 44C42 40 34 40 30 41V66C34 65 42 65 48 69C54 65 62 65 66 66V41C62 40 54 40 48 44Z" fill="#2457F5" />
+        <path d="M48 44C42 40 34 40 30 41V66C34 65 42 65 48 69C54 65 62 65 66 66V41C62 40 54 40 48 44Z" fill="#111113" />
         <path d="M48 45V68" stroke="#fff" strokeWidth="2.5" />
       </svg>
       <div className="splash-name">GenMeet</div>

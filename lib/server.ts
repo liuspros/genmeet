@@ -10,7 +10,7 @@ export async function lecturer(req: NextRequest) {
   return me && me.role === "lecturer" ? { uid: u.uid, code: me.classCode as string } : null;
 }
 export const deny = () => NextResponse.json({ error: "Lecturers only." }, { status: 403 });
-export const normId = (s: unknown) => String(s ?? "").trim().toUpperCase().replace(/\//g, "-");
+export { normId } from "./id";
 
 // Wraps a route so a crash returns readable JSON instead of an empty 500.
 export const safe = (fn: (req: NextRequest) => Promise<NextResponse>) => async (req: NextRequest) => {
@@ -20,3 +20,8 @@ export const safe = (fn: (req: NextRequest) => Promise<NextResponse>) => async (
     return NextResponse.json({ error: "Server problem: " + (e instanceof Error ? e.message : "unknown error") }, { status: 500 });
   }
 };
+
+export async function authed(req: NextRequest) {
+  const t = req.headers.get("authorization")?.replace("Bearer ", "");
+  return t ? await getAdminAuth().verifyIdToken(t).catch(() => null) : null;
+}

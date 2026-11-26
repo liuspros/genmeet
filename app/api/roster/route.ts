@@ -7,7 +7,7 @@ export const GET = safe(async (req: NextRequest) => {
   if (!l) return deny();
   const s = await getAdminDb().collection(`rosters/${l.code}/students`).get();
   const students = s.docs
-    .map((d) => ({ id: d.id, name: (d.get("name") as string) || "", linked: !!d.get("uid") }))
+    .map((d) => ({ id: d.id, name: (d.get("name") as string) || "", linked: !!d.get("uid"), email: (d.get("email") as string) || "" }))
     .sort((a, b) => a.id.localeCompare(b.id));
   return NextResponse.json({ code: l.code, students });
 });

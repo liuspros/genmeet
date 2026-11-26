@@ -1,14 +1,21 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{db}/documents {
-    function code() { return get(/databases/$(db)/documents/users/$(request.auth.uid)).data.classCode; }
+    function me() { return get(/databases/$(db)/documents/users/$(request.auth.uid)).data; }
+    function active() { return request.auth != null && me().get('status', 'active') == 'active'; }
+    function inClass(code) { return active() && code != '' && me().classCode == code; }
+
     match /users/{uid} { allow read: if request.auth != null && request.auth.uid == uid; }
-    match /meetings/{id} { allow read: if request.auth != null && resource.data.classCode == code(); }
+    match /meetings/{id} { allow read: if inClass(resource.data.classCode); }
     match /groups/{g}/messages/{m} {
-      allow read: if request.auth != null && g == code();
-      allow create: if request.auth != null && g == code()
+      allow read: if inClass(g);
+      allow create: if inClass(g)
+        && request.resource.data.keys().hasOnly(['uid', 'name', 'text', 't'])
         && request.resource.data.uid == request.auth.uid
-        && request.resource.data.text is string && request.resource.data.text.size() < 2000;
+        && request.resource.data.name == me().name
+        && request.resource.data.text is string
+        && request.resource.data.text.size() > 0 && request.resource.data.text.size() <= 2000
+        && request.resource.data.t == request.time;
     }
   }
 }

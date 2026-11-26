@@ -3,6 +3,7 @@
 Next.js 14 + Firebase (Auth, Firestore) + Vercel. Installable on Android (Chrome menu, Install app).
 
 ## Setup
+0. In Firebase, Authentication, Sign-in method: enable both Google and Email/Password.
 1. Firebase project "genmeet" already exists: in the console, enable Google sign-in (Authentication) and create a Firestore database.
 2. The web config is already in `.env.local`. Create a service account key (Project settings, Service accounts, Generate new private key). Easiest: paste the whole downloaded JSON file as one variable, `FIREBASE_SERVICE_ACCOUNT`. Alternatively use the three FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL and FIREBASE_PRIVATE_KEY variables.
 3. Deploy `firestore.rules` (Firebase console, Firestore, Rules).
@@ -14,3 +15,7 @@ Next.js 14 + Firebase (Auth, Firestore) + Vercel. Installable on Android (Chrome
 
 ## Not built yet
 Splash screen is included. ID and password sign-in, reminders and push, attendance, in-chat meeting cards.
+
+## Notes
+- Create your own `.env.local` from `.env.example`. It is never included in shared zips.
+- Firestore rules in `firestore.rules` must be published after every change.

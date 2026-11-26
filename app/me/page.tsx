@@ -14,14 +14,10 @@ export default function Me() {
   const role = profile.role === "lecturer" ? "Lecturer" : "Student";
   const rows: [string, string][] = [["Role", role]];
   if (profile.studentId) rows.push(["Student ID", profile.studentId]);
-  rows.push(["Linked Gmail", user.email || "None"], ["Class code", profile.classCode]);
+  rows.push(["Linked Gmail", profile.googleEmail || "Not linked"], ["Course", profile.classCode || "Not joined yet"]);
   return (
     <main className="screen">
-      <h1 style={{ marginTop: 8 }}>Me</h1>
-      <div className="card" style={{ flexDirection: "row", alignItems: "center", gap: 14 }}>
-        <div className="avatar" aria-hidden="true">{initials}</div>
-        <div><h2>{profile.name}</h2><p>{role}</p></div>
-      </div>
+      <header className="hero"><div className="avatar" aria-hidden="true">{initials}</div><h1>{profile.name}</h1><p>{role}</p></header>
       <div className="card" style={{ gap: 0, padding: "4px 16px" }}>
         {rows.map(([k, v]) => <div key={k} className="kv"><span>{k}</span><span>{v}</span></div>)}
       </div>

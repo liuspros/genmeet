@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { addDoc, collection, onSnapshot, orderBy, query, serverTimestamp, where } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useUser } from "@/lib/useUser";
+import { MeetIcon } from "@/components/Logos";
 import { fmt, until } from "@/lib/time";
 
 type Msg = { id: string; uid: string; name: string; text: string };
@@ -19,10 +20,10 @@ export default function Chat() {
   const [err, setErr] = useState("");
   const end = useRef<HTMLDivElement>(null);
 
-  useEffect(() => { if (!loading && (!user || !profile)) router.replace("/login"); }, [loading, user, profile, router]);
+  useEffect(() => { if (!loading && (!user || !profile)) router.replace("/login"); else if (profile && !profile.classCode) router.replace("/join"); }, [loading, user, profile, router]);
   useEffect(() => { const t = setInterval(() => setNow(Date.now()), 30000); return () => clearInterval(t); }, []);
   useEffect(() => {
-    if (!profile) return;
+    if (!profile?.classCode) return;
     const bad = () => setErr("Could not load this chat. Check that the Firestore rules are published.");
     const a = onSnapshot(query(collection(db, "groups", profile.classCode, "messages"), orderBy("t")),
       (s) => setMsgs(s.docs.map((d) => ({ id: d.id, ...(d.data() as Omit<Msg, "id">) }))), bad);
@@ -44,12 +45,12 @@ export default function Chat() {
 
   return (
     <main className="screen chat">
-      <h1>{profile.classCode}</h1>
+      <header className="hero"><p>Class chat</p><h1>{profile.classCode}</h1></header>
       {next && (
         <article className="card live">
           <span className="chip">{fmt(next.start)}</span>
           <h2>{next.title}</h2><p>{until(next.start, now)}</p>
-          {now >= next.start - 15 * 60000 && <a className="btn blue" href={next.link} target="_blank" rel="noopener noreferrer">Join in Google Meet</a>}
+          {now >= next.start - 15 * 60000 && <a className="btn blue meet" href={next.link} target="_blank" rel="noopener noreferrer"><span className="chipicon"><MeetIcon /></span>Join in Google Meet</a>}
         </article>
       )}
       {err && <div className="err" role="alert">{err}</div>}
