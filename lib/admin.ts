@@ -2,15 +2,27 @@ import { cert, getApps, initializeApp } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
 import { getFirestore } from "firebase-admin/firestore";
 
+// Rebuilds the private key from whatever mangled form it was pasted in
+// (quotes, literal \n, spaces instead of line breaks, trailing commas).
+function fixKey(raw: string) {
+  const body = raw
+    .replace(/\\n/g, "\n")
+    .replace(/-----(BEGIN|END) PRIVATE KEY-----/g, "")
+    .replace(/["',\s]/g, "");
+  return `-----BEGIN PRIVATE KEY-----\n${(body.match(/.{1,64}/g) || []).join("\n")}\n-----END PRIVATE KEY-----\n`;
+}
+
 // Initialised on first use, so a build without server variables does not crash.
 function app() {
-  const key = process.env.FIREBASE_PRIVATE_KEY?.replace(/^"|"$/g, "").replace(/\\n/g, "\n");
-  if (!process.env.FIREBASE_PROJECT_ID || !process.env.FIREBASE_CLIENT_EMAIL || !key) {
-    throw new Error("Missing FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL or FIREBASE_PRIVATE_KEY.");
+  if (getApps()[0]) return getApps()[0];
+  const json = process.env.FIREBASE_SERVICE_ACCOUNT;
+  if (json) {
+    const j = JSON.parse(json);
+    return initializeApp({ credential: cert({ projectId: j.project_id, clientEmail: j.client_email, privateKey: fixKey(j.private_key) }) });
   }
-  return getApps()[0] ?? initializeApp({
-    credential: cert({ projectId: process.env.FIREBASE_PROJECT_ID, clientEmail: process.env.FIREBASE_CLIENT_EMAIL, privateKey: key }),
-  });
+  const { FIREBASE_PROJECT_ID: id, FIREBASE_CLIENT_EMAIL: email, FIREBASE_PRIVATE_KEY: key } = process.env;
+  if (!id || !email || !key) throw new Error("Missing FIREBASE_SERVICE_ACCOUNT (or FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL and FIREBASE_PRIVATE_KEY).");
+  return initializeApp({ credential: cert({ projectId: id, clientEmail: email, privateKey: fixKey(key) }) });
 }
 export const getAdminAuth = () => getAuth(app());
 export const getAdminDb = () => getFirestore(app());
