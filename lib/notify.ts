@@ -1,7 +1,7 @@
 import { getAdminDb, getAdminMessaging } from "./admin";
 
 // Sends a push alert to every registered device of everyone in a course. Dead tokens are cleaned up.
-export async function notifyClass(code: string, p: { title: string; body: string; url?: string; tag?: string; skipUid?: string }) {
+export async function notifyClass(code: string, p: { title: string; body: string; url?: string; tag?: string; skipUid?: string; extra?: Record<string, string> }) {
   const db = getAdminDb();
   const [a, b] = await Promise.all([
     db.collection("users").where("courses", "array-contains", code).get(),
@@ -16,7 +16,8 @@ export async function notifyClass(code: string, p: { title: string; body: string
   if (!docs.length) return;
   const res = await getAdminMessaging().sendEachForMulticast({
     tokens: docs.map((d) => d.id),
-    data: { title: p.title, body: p.body, url: p.url || "/", tag: p.tag || "genmeet" },
+    data: { title: p.title, body: p.body, url: p.url || "/", tag: p.tag || "genmeet", ...(p.extra || {}) },
+    android: { priority: "high" },
     webpush: { headers: { Urgency: "high", TTL: "900" } },
   });
   await Promise.all(res.responses.map((r, i) =>

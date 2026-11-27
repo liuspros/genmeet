@@ -20,3 +20,4 @@ Splash screen is included. ID and password sign-in, reminders and push, attendan
 - Create your own `.env.local` from `.env.example`. It is never included in shared zips.
 - Firestore rules in `firestore.rules` must be published after every change.
 - Push alerts: in Firebase, Project settings, Cloud Messaging, Web Push certificates, generate a key pair and put it in `NEXT_PUBLIC_FIREBASE_VAPID_KEY`. Also set `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID`. Alerts fire when a class is scheduled. Timed reminders need a scheduler and are not built yet.
+- Class reminders and the full-screen class-start alert use Upstash QStash (free plan). Create a QStash account, then set `QSTASH_TOKEN`, `QSTASH_CURRENT_SIGNING_KEY`, `QSTASH_NEXT_SIGNING_KEY` and `APP_URL`. Alerts are queued when a class is created, 15 minutes before and at start. The free plan limits scheduling to 7 days ahead.

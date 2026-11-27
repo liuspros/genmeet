@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getAdminDb } from "@/lib/admin";
 import { bad, deny, lecturer, normCode, safe } from "@/lib/server";
 import { notifyClass } from "@/lib/notify";
+import { scheduleMeetingPushes } from "@/lib/schedule";
 
 // Lecturer creates a Google Meet space with their own Google access token and saves the class.
 export const POST = safe(async (req) => {
@@ -39,16 +40,18 @@ export const POST = safe(async (req) => {
     return bad("Google would not create the meeting. Check that the Meet API is enabled and you allowed access.", 502);
   }
   const space = await r.json();
+  let meetingId = "";
   try {
-    await db.collection("meetings").add({
+    meetingId = (await db.collection("meetings").add({
       classCode: course, title, start, end: start + minutes * 60000, link: space.meetingUri, access,
       status: "scheduled", hostUid: l.uid, host: String(info.email), lecturerName: l.me.name, createdAt: Date.now(),
-    });
+    })).id;
   } catch (e) {
     await db.collection("audit").add({ type: "meeting.save.failed", uid: l.uid, course, link: space.meetingUri, at: Date.now() });
     throw e;
   }
   await db.collection("audit").add({ type: "meeting.create", uid: l.uid, course, at: Date.now() });
+  await scheduleMeetingPushes(meetingId, start).catch((e) => console.error(e));
   await notifyClass(course, { title: "New class scheduled", body: title, url: "/", tag: "meeting", skipUid: l.uid }).catch((e) => console.error(e));
   return NextResponse.json({ ok: true });
 });
