@@ -1,8 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { collection, onSnapshot } from "firebase/firestore";
-import { db } from "@/lib/firebase";
 import { api } from "@/lib/flow";
 import { useUser } from "@/lib/useUser";
 import { useMeta } from "@/lib/meta";
@@ -23,8 +21,8 @@ export default function Courses() {
   useEffect(() => { if (!loading && (!user || !profile)) router.replace("/login"); }, [loading, user, profile, router]);
   useEffect(() => {
     if (!user) return;
-    return onSnapshot(collection(db, "groups"), (s) => setAll(s.docs.map((d) => ({ id: d.id, name: (d.get("name") as string) || d.id })).sort((a, b) => a.id.localeCompare(b.id))), () => {});
-  }, [user]);
+    api("/api/courses", user, undefined, "GET").then((d) => setAll(d.courses)).catch(() => {});
+  }, [user, msg]);
   if (!profile || !user) return null;
   const lecturer = profile.role === "lecturer";
   const available = all.filter((g) => !profile.courses.includes(g.id));

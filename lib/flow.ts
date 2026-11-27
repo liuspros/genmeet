@@ -7,7 +7,7 @@ export async function api(path: string, user: User | null, body?: unknown, metho
   const res = await fetch(path, {
     method,
     headers: { "Content-Type": "application/json", ...(user ? { Authorization: `Bearer ${await user.getIdToken(true)}` } : {}) },
-    body: JSON.stringify(body ?? {}),
+    body: method === "GET" ? undefined : JSON.stringify(body ?? {}),
   });
   const d = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(d.error || "Server error. Check the Vercel logs.");

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAdminDb } from "@/lib/admin";
-import { bad, deny, lecturer, normCode, safe } from "@/lib/server";
+import { authed, bad, deny, lecturer, normCode, safe } from "@/lib/server";
 
 // A lecturer creates a course (or reopens one they own).
 export const POST = safe(async (req) => {
@@ -17,4 +17,13 @@ export const POST = safe(async (req) => {
   await g.set({ name: title || code, ownerUid: l.uid, ownerName: l.me.name }, { merge: true });
   await db.doc(`users/${l.uid}`).update({ courses: Array.from(new Set([...l.courses, code])) });
   return NextResponse.json({ ok: true });
+});
+
+// Every course on the platform, for the registration dropdown. Served by the server so it does not depend on Firestore rules.
+export const GET = safe(async (req) => {
+  const u = await authed(req);
+  if (!u) return bad("Please sign in again.", 401);
+  const s = await getAdminDb().collection("groups").get();
+  const courses = s.docs.map((d) => ({ id: d.id, name: (d.get("name") as string) || d.id })).sort((a, b) => a.id.localeCompare(b.id));
+  return NextResponse.json({ courses });
 });
