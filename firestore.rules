@@ -7,6 +7,7 @@ service cloud.firestore {
 
     match /users/{uid} { allow read: if request.auth != null && request.auth.uid == uid; }
     match /groups/{g} { allow read: if request.auth != null; }
+    match /attendanceRows/{id} { allow read: if request.auth != null && resource.data.studentId == me().get('studentId', ''); }
     match /meetings/{id} { allow read: if inClass(resource.data.classCode); }
     match /groups/{g}/messages/{m} {
       allow read: if inClass(g);
